@@ -1,0 +1,171 @@
+*****INTRODUCTION*****
+Consider a sequence in which we apply continuously to n:
+f(n) = 3n+1 if n mod 2 = 1
+       n/2 if n mod 2 = 0
+The Collatz Conjecture states that this sequence will eventually reach 1. It's called a Conjecture because no one has officially proven that every single number reaches 1.
+
+Astute readers may notice that an odd step always follows an even step. That is obvious from the sequece:
+3 * odd + 1
+Odd * odd + even = even
+Some skip this trivial step by defining the collatz sequence as follows:
+f(n) = (3n+1)/2 if n mod 2 = 1
+       n/2 if n mod 2 = 0
+Soon we will use this sequence to shorten things up a bit.
+
+This module looks at a certain pattern hidden in this sequence, dealing with the "path" that number takes on its way to the first number k such that k < n.
+
+Lets look at a few numbers and see the path they take.
+
+10:
+10 is even, so the next number in the sequence is 5. This is a trivial case. All even numbers take exactly one step to reach the next lowest number.
+
+3:
+10
+5
+16
+8
+4
+2
+3 takes a little longer: 6 steps.
+
+7:
+22
+11
+34
+17
+52
+26
+13
+40
+20
+10
+5
+7 takes 11 steps!
+
+Perform the sequence for 27. It may take a while.
+
+Lets look a little closer at the sequence by reducing the sequence to just even versus odd. We'll represent an even step with 0 and an odd step with 1. Remember the sequence goes from left to right. The sequences look suspiciously like binary which reads right to left, and in fact we will be reversing the order here soon.
+
+3: 010111
+7: 01010110111
+And just for fun...
+27: 010110101010101101101011010101101010101101110101011010110101010101011101010101111011011011110111
+
+Let's take a look two more numbers:
+19: 010111
+135: 01010110111
+
+Do these sequences look familiar? They're the same sequence for 3 and 17! One more time...
+35: 010111
+263: 01010110111
+
+Again, the exact same sequences as before! What do these numbers have in common? I'll go ahead and spoil it for you by giving the equation.
+35 = 2*2^4 + 3
+263 = 2*2^7 + 7
+
+But why 2^4 and 2^7? Count the even steps in both sequences. n=3 has 4 even steps. n=7 has 7 even steps. From now on, we will call numbers like 3 and 7 "remainders" (represented as r), because 263 mod 2**7 = 7 and 35 mod 2**4 = 3. We will also call the even steps "e".
+
+For every m >= 0, m*2^e + r follows the same path. So all we have to do is run a number through the sequence once, count the number of even steps, and calculate the remainder. Choosing any value of m will give the exact same sequence.
+
+Running all numbers through this algorithm shows that some e have multiple r values. Take e = 7. r = (7, 15, 59). Each r takes a different path with the same number of even and odd steps rearranged. Once we've calculated past 128, no new remainders are found for e = 7.
+
+Another odd pattern emerges while looking closely at r values. Lets look at some:
+e = 5
+(11, 23)
+
+e = 7
+(7, 15, 59)
+
+e = 8
+(39, 79, 95, 123, 175, 199, 219)
+
+e = 10
+(287, 347, 367, 423, 507, 575, 583, 735, 815, 923, 975, 999)
+
+Starting at e = 5, every e contains at least one pair of remainders where (r, 2*r+1)
+
+e = 7
+(7, 15)
+
+e = 8
+(39, 79)
+
+e = 10
+(287, 575)
+(367, 735)
+
+e = 20
+
+(1127, 2255)
+(1255, 2511)
+(1439, 2879)
+(2175, 4351)
+(2255, 4511)
+(4511, 9023)
+
+The pattern gets stranger when we look at their parity sequences, broken up into distict "phases":
+
+e = 20
+
+(1127, 2255)
+p1 = 111  01  111011001110  000
+p2 = 111  10  011101100111  000
+
+(1255, 2511)
+111  01  1101011011010  00
+111  10  0110101101101  00
+
+(1439, 2879)
+11111  01  10111010010  00
+11111  10  01011101001  00
+
+(2175, 4351)
+1111111  01  00110110  000
+1111111  10  00011011  000
+
+Each pair sequence goes through four phases:
+Initial increase
+p1 = 01, p2 = 10
+p2 = p1 shifted right 1
+Final decrease
+
+The shifted phase is the strangest. Lets reverse the above sequences and look at them as traditional binary sequences.
+
+(1127, 2255)
+011100110111
+111001101110
+
+(1255, 2511)
+0101101101011
+1011011010110
+
+(1439, 2879)
+01001011101
+10010111010
+
+(2175, 4351)
+01101100
+11011000
+
+The second sequence represents a tradtional right bit shift. If we convert the sequences to integers, we get:
+
+(1127, 2255)
+1847
+3694
+
+(1255, 2511)
+2923
+5846
+
+(1439, 2879)
+605
+1210
+
+(2175, 4351)
+108
+216
+
+p2 = 2*p1!!!  Is this in any way related to (r, 2*r + 1)? If so, where does the +1 go? Why is it tucked away in the middle of the sequence? Does the binary converted to integer relate in any way to the remainder or even step value?
+
+Where to go from here:
+Look at the center of non remainder pairs and see if there are other quasi binary operations.
