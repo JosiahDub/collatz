@@ -227,12 +227,12 @@ class Collatz:
         return seq_index
 
     @staticmethod
-    def calc(number, next_lowest=False, return_more=False):
+    def calc(number, next_lowest=False, verbose=False):
         """
         Calculates the collatz shifted, parity shifted, even steps,
         and the remainder.
         :param number:
-        :param return_more:
+        :param verbose:
         :param next_lowest:
         :return:
         """
@@ -246,16 +246,16 @@ class Collatz:
         parity_sequence = ''
         # loops while number is less than first
         while number >= target_num:
-            parity = number % 2
+            parity = int(number % 2)
             # Odd step
             if parity:
                 number = (3 * number + 1) / 2
             # Even step
             else:
                 number /= 2
-            collatz_sequence.append(number)
+            collatz_sequence.append(int(number))
             parity_sequence += str(parity)
-        if return_more:
+        if verbose:
             # Get even steps and remainder
             # JUst the length of the string since a 1 carries an implicit 0
             even_steps = len(parity_sequence)
