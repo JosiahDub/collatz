@@ -112,8 +112,7 @@ class Collatz:
             # The shifted might shorten, so this acts as a shrinking for loop
             index = 0
             while index < len(incomplete_sequence):
-                _, sequence, even, rem = self.calc(incomplete_sequence[index],
-                                                   True, True)
+                _, sequence, even, rem = calc_verbose(incomplete_sequence[index])
                 # even already found
                 if even not in self.evens:
                     odd = sequence.count('1')
@@ -212,69 +211,85 @@ class Collatz:
                     sequence.remove(known_number)
         return sequence
 
-    def is_remainder_subset(self, sub_remainder, remainder):
-        sub_doc = self.mongo.remainder.find_one({"remainder": sub_remainder})
+    def is_remainder_subset(self, subset_remainder, remainder):
+        """
+        Determine if a remainder is a subset of another remainder's sequence.
+
+        If it is, return the index where is starts. Otherwise return -1
+        :param subset_remainder:
+        :param remainder:
+        :return:
+        """
+        sub_doc = self.mongo.remainder.find_one({"remainder": subset_remainder})
         rem_doc = self.mongo.remainder.find_one({"remainder": remainder})
         seq_index = -1
         if sub_doc["sequence"] in rem_doc["sequence"]:
             start_seq = rem_doc["sequence"].index(sub_doc["sequence"])
             # Get the value in the sequence
-            found_seq_num = Collatz.short_calc(rem_doc["remainder"], start_seq)
+            found_seq_num = calc_short(rem_doc["remainder"], start_seq)
             # Get the remainder of the value
-            _, __, ___, possible_rem = Collatz.calc(found_seq_num, True, True)
+            _, __, ___, possible_rem = calc_verbose(found_seq_num)
             if possible_rem == sub_doc["remainder"]:
                 seq_index = start_seq
         return seq_index
 
-    @staticmethod
-    def calc(number, next_lowest=False, verbose=False):
-        """
-        Calculates the collatz shifted, parity shifted, even steps,
-        and the remainder.
-        :param number:
-        :param verbose:
-        :param next_lowest:
-        :return:
-        """
-        if next_lowest:
-            target_num = number
-        else:
-            # Will stop at 1 cuz 2/2 = 1 duh doy
-            target_num = 2
-        first = number
-        collatz_sequence = [number]
-        parity_sequence = ''
-        # loops while number is less than first
-        while number >= target_num:
-            parity = int(number % 2)
-            # Odd step
-            if parity:
-                number = (3 * number + 1) / 2
-            # Even step
-            else:
-                number /= 2
-            collatz_sequence.append(int(number))
-            parity_sequence += str(parity)
-        if verbose:
-            # Get even steps and remainder
-            # JUst the length of the string since a 1 carries an implicit 0
-            even_steps = len(parity_sequence)
-            remainder = first % (2 ** even_steps)
-            return collatz_sequence, parity_sequence, even_steps, remainder
-        else:
-            return collatz_sequence
 
-    @staticmethod
-    def short_calc(num, step):
-        """
-        Returns the num according to the step
-        """
-        for _ in range(step):
-            parity = num % 2
-            # Odd step
-            if parity:
-                num = (3 * num + 1) / 2
-            # Even step
-            else:
-                num /= 2
-        return num
+def calc_verbose(number):
+    """
+    Calculates the collatz shifted, parity shifted, even steps,
+    and the remainder to the next lowest number.
+    :param number:
+    :return:
+    """
+    first = number
+    collatz_sequence = [number]
+    parity_sequence = ''
+    # loops while number is less than first
+    while number >= first:
+        parity = number % 2
+        # Odd step
+        if parity:
+            number = (3 * number + 1) / 2
+        # Even step
+        else:
+            number /= 2
+        collatz_sequence.append(int(number))
+        parity_sequence += str(parity)
+    # Get even steps and remainder
+    # Just the length of the string since a 1 carries an implicit 0
+    even_steps = len(parity_sequence)
+    remainder = first % (2 ** even_steps)
+    return collatz_sequence, parity_sequence, even_steps, remainder
+
+
+def calc_short(num, step):
+    """
+    Performs the Collatz sequence to the desired step number and returns that number.
+    """
+    for _ in range(step):
+        # Odd step
+        if num % 2:
+            num = (3 * num + 1) / 2
+        # Even step
+        else:
+            num /= 2
+    return num
+
+
+def calc(num):
+    """
+    Good ol' Collatz. Returns the collatz sequence for any number.
+    :param num:
+    :return:
+    """
+    seq = []
+    while num >= 1:
+        parity = int(num % 2)
+        # Odd step
+        if parity:
+            num = (3 * num + 1) / 2
+        # Even step
+        else:
+            num /= 2
+        seq.append(int(num))
+    return seq
