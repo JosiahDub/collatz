@@ -1,7 +1,7 @@
-import math
-from EvenSteps import *
-from Remainder import *
-from RemainderPair import *
+from math import ceil, floor
+from EvenSteps import EvenSteps
+from Remainder import Remainder
+from RemainderPair import RemainderPair
 from CollatzContainer import CollatzContainer
 
 
@@ -42,7 +42,7 @@ class Collatz:
             self.add_remainder(2, 1, '10')
 
     @classmethod
-    def mongo_init(cls, container, step_size=4, batch_value=10000):
+    def container_init(cls, container: CollatzContainer, step_size=4, batch_value=10000):
         collatz = cls(container, step_size=step_size, batch_value=batch_value,
                       add_trivial=False)
         stats_doc = collatz.container.get_stats()
@@ -120,7 +120,7 @@ class Collatz:
                 # Checks if there's at least one now known number in the shifted
                 if rem + even < last_num:
                     # First multiple corresponds to remainder, equals 0.
-                    last_multiple = math.floor((last_num - rem) / 2 ** even)
+                    last_multiple = floor((last_num - rem) / 2 ** even)
                     # The next multiple will be 1, so start there.
                     multiples = range(1, int(last_multiple + 1))
                     # Remove all now known numbers from the shifted
@@ -141,9 +141,10 @@ class Collatz:
         :return:
         """
         target_num = self.last_number + self.batch_value
-        sequence = range(self.last_number, target_num + 1, self.step_size)
-        # Sets the last number based on the shifted
-        self.last_number = sequence[-1]
+        sequence = [self.last_number]
+        while self.last_number < target_num:
+            self.last_number += self.step_size
+            sequence.append(self.last_number)
         # Generates incomplete numbers
         incomplete_nums = self.generate_incomplete_numbers(sequence)
         # Adds the batch
@@ -191,21 +192,19 @@ class Collatz:
         :param sequence:
         :return:
         """
-        first_num = float(sequence[0])
-        last_num = float(sequence[-1])
         for even, remainders in self.evens.items():
-            if even == 1 or even == 2:
+            if even in [1, 2]:
                 continue
             for rem in remainders:
                 # Find the first multiple such that multi*2^even+remainder
                 # is greater than the first multiple. Same with last multiple
                 # except less than last number.
-                first_multiple = math.ceil((first_num-rem)/2**even)
-                last_multiple = math.floor((last_num-rem)/2**even)
-                multiples = range(int(first_multiple), int(last_multiple + 1))
+                first_multiple = ceil((sequence[0] - rem) / 2**even)
+                last_multiple = floor((sequence[-1] - rem) / 2**even)
+                multiples = range(first_multiple, last_multiple + 1)
                 # Add these number to our known list
                 for multi in multiples:
-                    known_number = multi * 2 ** even + rem
+                    known_number = multi * 2**even + rem
                     # Remove this number from our shifted
                     sequence.remove(known_number)
         return sequence
