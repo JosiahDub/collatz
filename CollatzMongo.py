@@ -1,8 +1,10 @@
 from pymongo import MongoClient
+from CollatzContainer import CollatzContainer
 
 
-class CollatzMongo:
+class CollatzMongo(CollatzContainer):
     def __init__(self):
+        super().__init__()
         self.mongo = MongoClient('localhost', 27017)
         self.database = self.mongo.get_database('collatz')
         self.even = self.database.get_collection('even')
@@ -20,10 +22,7 @@ class CollatzMongo:
         self.even.insert_one(document)
 
     def even_exists(self, even):
-        if self.even.find_one({"even": even}) is not None:
-            return True
-        else:
-            return False
+        return self.even.find_one({"even": even}) is not None
 
     def even_complete(self, even):
         even = self.even.find_one({"even": even})
@@ -66,10 +65,7 @@ class CollatzMongo:
         self.pair.insert_one(pair_doc)
 
     def remainder_exists(self, even, rem):
-        if self.remainder.find_one({"even": even, "remainder": rem}) is not None:
-            return True
-        else:
-            return False
+        return self.remainder.find_one({"even": even, "remainder": rem}) is not None
 
     def get_num_remainders(self, even):
         return self.remainder.find({"even": even}).count()

@@ -2,7 +2,7 @@ import math
 from EvenSteps import *
 from Remainder import *
 from RemainderPair import *
-from CollatzMongo import CollatzMongo
+from CollatzContainer import CollatzContainer
 
 
 # TODO: write a script to calculate the average shifted length for increasing m
@@ -23,9 +23,9 @@ class Collatz:
     total_percent = 0.0
     evens = {}
 
-    def __init__(self, last_number=3, step_size=4, batch_value=10000,
+    def __init__(self, container: CollatzContainer, last_number=3, step_size=4, batch_value=10000,
                  add_trivial=True):
-        self.mongo = CollatzMongo()
+        self.container = container
         # last_number = 3 skips trivial 1 and 2.
         self.last_number = last_number
         # step_size = 4 safely skips 75% of trivial numbers
@@ -42,15 +42,14 @@ class Collatz:
             self.add_remainder(2, 1, '10')
 
     @classmethod
-    def mongo_init(cls, mongo, step_size=4, batch_value=10000):
-        collatz = cls(step_size=step_size, batch_value=batch_value,
+    def mongo_init(cls, container, step_size=4, batch_value=10000):
+        collatz = cls(container, step_size=step_size, batch_value=batch_value,
                       add_trivial=False)
-        collatz.mongo = mongo
-        stats_doc = collatz.mongo.get_stats()
+        stats_doc = collatz.container.get_stats()
         collatz.total_percent = stats_doc["percent_complete"]
         collatz.last_number = stats_doc["last_number"]
-        for even in collatz.mongo.get_even_list():
-            collatz.evens[even] = collatz.mongo.get_even_remainders(even)
+        for even in collatz.container.get_even_list():
+            collatz.evens[even] = collatz.container.get_even_remainders(even)
         return collatz
 
     def add_even(self, even, odd):
@@ -62,19 +61,19 @@ class Collatz:
         """
         self.evens[even] = []
         even_obj = EvenSteps(even, odd)
-        self.mongo.add_even(even_obj)
+        self.container.add_even(even_obj)
         return even_obj
 
     def add_remainder(self, even, remainder, sequence):
         self.evens[even].append(remainder)
         rem_obj = Remainder(remainder, sequence)
-        self.mongo.add_remainder(even, rem_obj)
+        self.container.add_remainder(even, rem_obj)
         lesser_rem = (remainder - 1) / 2
         if lesser_rem in self.evens[even]:
-            lesser_seq = self.mongo.get_sequence(lesser_rem)
+            lesser_seq = self.container.get_sequence(lesser_rem)
             remainder_pair = RemainderPair(lesser_rem, remainder,
                                            lesser_seq, sequence)
-            self.mongo.add_remainder_pair(even, remainder_pair)
+            self.container.add_remainder_pair(even, remainder_pair)
 
     def check_for_number_completeness(self, num):
         """
@@ -128,8 +127,8 @@ class Collatz:
                     for multi in multiples:
                         incomplete_sequence.remove(multi * 2 ** even + rem)
                 index += 1
-        self.mongo.update_last_number(self.last_number)
-        self.mongo.update_percent_complete(self.calculate_number_percentage())
+        self.container.update_last_number(self.last_number)
+        self.container.update_percent_complete(self.calculate_number_percentage())
 
     def add_incomplete_batch(self):
         """
@@ -175,10 +174,10 @@ class Collatz:
         if so.
         :return:
         """
-        incomplete = self.mongo.get_complete_evens(False)
+        incomplete = self.container.get_complete_evens(False)
         for even in incomplete:
             if self.last_number >= 2 ** even:
-                self.mongo.set_even_completeness(even, True)
+                self.container.set_even_completeness(even, True)
 
     def generate_incomplete_numbers(self, sequence):
         """
@@ -220,16 +219,16 @@ class Collatz:
         :param remainder:
         :return:
         """
-        sub_doc = self.mongo.remainder.find_one({"remainder": subset_remainder})
-        rem_doc = self.mongo.remainder.find_one({"remainder": remainder})
+        subset_sequence = self.container.get_sequence(subset_remainder)
+        remainder_sequence = self.container.get_sequence(remainder)
         seq_index = -1
-        if sub_doc["sequence"] in rem_doc["sequence"]:
-            start_seq = rem_doc["sequence"].index(sub_doc["sequence"])
+        if subset_sequence in remainder_sequence:
+            start_seq = remainder_sequence.index(subset_sequence)
             # Get the value in the sequence
-            found_seq_num = calc_short(rem_doc["remainder"], start_seq)
+            found_seq_num = calc_short(remainder, start_seq)
             # Get the remainder of the value
             _, __, ___, possible_rem = calc_verbose(found_seq_num)
-            if possible_rem == sub_doc["remainder"]:
+            if possible_rem == subset_remainder:
                 seq_index = start_seq
         return seq_index
 
