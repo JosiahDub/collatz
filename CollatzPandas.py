@@ -11,6 +11,16 @@ from RemainderPair import RemainderPair
 
 class CollatzPandas(CollatzContainer):
 
+    def __init__(self):
+        super().__init__()
+
+    """
+    EVENS
+    """
+
+    def add_even(self, even: EvenSteps):
+        pass
+
     def even_exists(self, even: int):
         pass
 
@@ -25,6 +35,10 @@ class CollatzPandas(CollatzContainer):
 
     def get_complete_evens(self, complete: bool):
         pass
+
+    """
+    REMAINDER
+    """
 
     def add_remainder(self, even: EvenSteps, rem: Remainder):
         pass
@@ -47,6 +61,10 @@ class CollatzPandas(CollatzContainer):
     def get_sequence(self, remainder: int):
         pass
 
+    """
+    STATS
+    """
+
     def update_last_number(self, number: int):
         pass
 
@@ -58,11 +76,3 @@ class CollatzPandas(CollatzContainer):
 
     def get_stats(self):
         pass
-
-    def __init__(self):
-        super().__init__()
-
-    def add_even(self, even: EvenSteps):
-        pass
-
-
