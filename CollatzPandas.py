@@ -63,31 +63,41 @@ class CollatzPandas(CollatzContainer):
         return list(self.even.index.values)
 
     def get_complete_evens(self, complete: bool):
-        pass
+        return list(self.even.loc[self.even['completed']].values)
 
     """
     REMAINDER
     """
 
     def add_remainder(self, even: EvenSteps, rem: Remainder):
-        pass
+        self.remainder.loc[rem.remainder] = [even.even_steps,
+                                             rem.sequence,
+                                             rem.beta,
+                                             rem.num_initial_increases,
+                                             rem.num_trailing_decreases,
+                                             rem.sequence_center,
+                                             ]
+
+    def remainder_exists(self, even: int, rem: int):
+        return rem in self.remainder.index
+
+    def get_num_remainders(self, even: int):
+        return self.remainder
+
+    def get_even_remainders(self, even: int):
+        return len(self.remainder.loc[self.remainder['even'] == even])
+
+    def get_sequence(self, remainder: int):
+        return self.remainder.at[remainder, 'sequence']
+
+    """
+    REMAINDER PAIR
+    """
 
     def add_remainder_pair(self, even: int, pair: RemainderPair):
         pass
 
-    def remainder_exists(self, even: int, rem: int):
-        pass
-
-    def get_num_remainders(self, even: int):
-        pass
-
     def get_remainder_pair_sequence(self, pair: list):
-        pass
-
-    def get_even_remainders(self, even: int):
-        pass
-
-    def get_sequence(self, remainder: int):
         pass
 
     """
