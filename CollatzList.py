@@ -6,6 +6,8 @@ from EvenSteps import EvenSteps
 from Remainder import Remainder
 from RemainderPair import RemainderPair
 
+# TODO: Save and load files
+
 
 class CollatzList(CollatzContainer):
     """
@@ -49,7 +51,7 @@ class CollatzList(CollatzContainer):
         raise NotImplementedError
 
     def remainder_exists(self, even: int, rem: int):
-        return rem in self.evens[even]['remainders'].keys()
+        return rem in self.evens[even]['remainders']
 
     def get_num_remainders(self, even: int):
         return len(self.evens[even]['remainders'])
