@@ -41,7 +41,9 @@ class CollatzPandas(CollatzContainer):
         self.pair = pd.DataFrame(columns=['even',
                                           'shifted_core',
                                           ],
-                                 index=pd.Index([], name='pair'))
+                                 index=pd.MultiIndex(levels=[[], []],
+                                                     codes=[[], []],
+                                                     names=['first', 'second']))
 
     """
     EVENS
@@ -95,7 +97,8 @@ class CollatzPandas(CollatzContainer):
     """
 
     def add_remainder_pair(self, even: int, pair: RemainderPair):
-        pass
+        self.pair.loc[tuple(pair.pair), 'even'] = even
+        self.pair.loc[tuple(pair.pair), 'shifted_core'] = pair.shifted_core
 
     def get_remainder_pair_sequence(self, pair: list):
         pass
