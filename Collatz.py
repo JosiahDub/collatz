@@ -245,7 +245,7 @@ def calc_verbose(number):
     parity_sequence = ''
     # loops while number is less than first
     while number >= first:
-        parity = number % 2
+        parity = int(number % 2)
         # Odd step
         if parity:
             number = (3 * number + 1) / 2
