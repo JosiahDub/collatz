@@ -70,6 +70,7 @@ class Collatz:
         self.container.add_remainder(even, rem_obj)
         lesser_rem = (remainder - 1) / 2
         if lesser_rem in self.evens[even]:
+            lesser_rem = int(lesser_rem)
             lesser_seq = self.container.get_sequence(lesser_rem)
             remainder_pair = RemainderPair(lesser_rem, remainder,
                                            lesser_seq, sequence)
