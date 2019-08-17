@@ -70,8 +70,8 @@ class CollatzPandas(CollatzContainer):
     REMAINDER
     """
 
-    def add_remainder(self, even: EvenSteps, rem: Remainder):
-        self.remainder.loc[rem.remainder] = [even.even_steps,
+    def add_remainder(self, even: int, rem: Remainder):
+        self.remainder.loc[rem.remainder] = [even,
                                              rem.sequence,
                                              rem.beta,
                                              rem.num_initial_increases,

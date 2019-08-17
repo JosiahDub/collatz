@@ -32,7 +32,7 @@ class CollatzContainer:
     # REMAINDER
     # ######################
 
-    def add_remainder(self, even: EvenSteps, rem: Remainder):
+    def add_remainder(self, even: int, rem: Remainder):
         raise NotImplementedError
 
     def add_remainder_pair(self, even: int, pair: RemainderPair):
