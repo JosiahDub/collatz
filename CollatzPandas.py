@@ -4,7 +4,6 @@ from CollatzContainer import *
 
 
 class CollatzPandas(CollatzContainer):
-
     """
     DataFrame Structure
     EVEN
@@ -57,7 +56,7 @@ class CollatzPandas(CollatzContainer):
         self.even.at[even, 'completed'] = complete
 
     def get_even_list(self):
-        return list(self.even.index.values)
+        return [int(e) for e in self.even.index.values]
 
     def get_complete_evens(self, complete: bool):
         return list(self.even.loc[self.even['completed'] == complete].index)
@@ -82,7 +81,7 @@ class CollatzPandas(CollatzContainer):
         return self.remainder
 
     def get_even_remainders(self, even: int):
-        return len(self.remainder.loc[self.remainder['even'] == even])
+        return list(self.remainder.loc[self.remainder['even'] == even].index)
 
     def get_sequence(self, remainder: int):
         return self.remainder.at[remainder, 'sequence']
@@ -118,7 +117,7 @@ class CollatzPandas(CollatzContainer):
     SAVE AND LOAD
     """
 
-    def save(self, path: str):
+    def save(self, path: str = ''):
         self.even.to_pickle(os.path.join(path, 'even.pkl'))
         self.remainder.to_pickle(os.path.join(path, 'remainder.pkl'))
         self.pair.to_pickle(os.path.join(path, 'pair.pkl'))
@@ -131,3 +130,4 @@ class CollatzPandas(CollatzContainer):
         self.remainder = pd.read_pickle(files['remainder'])
         self.pair = pd.read_pickle(files['pair'])
         self.stats = pd.read_pickle(files['stats'])
+        return self
