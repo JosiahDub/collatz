@@ -1,5 +1,3 @@
-from typing import Dict
-
 import pandas as pd
 
 from CollatzContainer import CollatzContainer
@@ -44,6 +42,7 @@ class CollatzPandas(CollatzContainer):
                                  index=pd.MultiIndex(levels=[[], []],
                                                      codes=[[], []],
                                                      names=['first', 'second']))
+        self.stats = pd.Series({'Last Number': 0, 'Percent Complete': 0})
 
     """
     EVENS
@@ -101,20 +100,20 @@ class CollatzPandas(CollatzContainer):
         self.pair.loc[tuple(pair.pair), 'shifted_core'] = pair.shifted_core
 
     def get_remainder_pair_sequence(self, pair: list):
-        pass
+        return [self.remainder.at[pair[0], 'sequence'], self.remainder.at[pair[1], 'sequence']]
 
     """
     STATS
     """
 
     def update_last_number(self, number: int):
-        pass
+        self.stats['Last Number'] = number
 
     def get_last_number(self):
-        pass
+        return self.stats['Last Number']
 
     def update_percent_complete(self, percent: float):
-        pass
+        self.stats['Percent Complete'] = percent
 
     def get_stats(self):
         pass
