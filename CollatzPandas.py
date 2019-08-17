@@ -23,10 +23,10 @@ class CollatzPandas(CollatzContainer):
 
     def __init__(self):
         super().__init__()
-        self.even = pd.DataFrame(columns=['odd',
-                                          'completed',
-                                          'alpha',
-                                          ],
+        self.even = pd.DataFrame({'odd': pd.Series([], dtype='int64'),
+                                  'completed': pd.Series([], dtype='bool'),
+                                  'alpha': pd.Series([], dtype='float64')
+                                  },
                                  index=pd.Index([], name='even'))
         self.remainder = pd.DataFrame(columns=['even',
                                                'sequence',
@@ -64,7 +64,7 @@ class CollatzPandas(CollatzContainer):
         return list(self.even.index.values)
 
     def get_complete_evens(self, complete: bool):
-        return list(self.even.loc[self.even['completed']].values)
+        return list(self.even.loc[self.even['completed'] == complete].index)
 
     """
     REMAINDER
