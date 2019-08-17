@@ -1,10 +1,6 @@
 import pandas as pd
 
-from CollatzContainer import CollatzContainer
-
-from EvenSteps import EvenSteps
-from Remainder import Remainder
-from RemainderPair import RemainderPair
+from CollatzContainer import *
 
 
 class CollatzPandas(CollatzContainer):
@@ -116,4 +112,22 @@ class CollatzPandas(CollatzContainer):
         self.stats['Percent Complete'] = percent
 
     def get_stats(self):
-        pass
+        return {'percent_complete': self.stats['Percent Complete'], 'last_number': self.stats['Last Number']}
+
+    """
+    SAVE AND LOAD
+    """
+
+    def save(self, path: str):
+        self.even.to_pickle(os.path.join(path, 'even.pkl'))
+        self.remainder.to_pickle(os.path.join(path, 'remainder.pkl'))
+        self.pair.to_pickle(os.path.join(path, 'pair.pkl'))
+        self.stats.to_pickle(os.path.join(path, 'stats.pkl'))
+
+    @classmethod
+    def load(cls, files: dict):
+        self = cls()
+        self.even = pd.read_pickle(files['even'])
+        self.remainder = pd.read_pickle(files['remainder'])
+        self.pair = pd.read_pickle(files['pair'])
+        self.stats = pd.read_pickle(files['stats'])
