@@ -1,3 +1,5 @@
+import os
+
 from EvenSteps import EvenSteps
 from Remainder import Remainder
 from RemainderPair import RemainderPair
@@ -67,4 +69,14 @@ class CollatzContainer:
         raise NotImplementedError
 
     def get_stats(self):
+        raise NotImplementedError
+
+    # #####################################
+    # SAVE AND LOAD
+    # #####################################
+
+    def save(self, path: str):
+        raise NotImplementedError
+
+    def load(self, files: dict):
         raise NotImplementedError
