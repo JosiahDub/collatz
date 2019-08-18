@@ -131,3 +131,11 @@ class CollatzPandas(CollatzContainer):
         self.pair = pd.read_pickle(files['pair'])
         self.stats = pd.read_pickle(files['stats'])
         return self
+
+    """
+    UTILITIES
+    """
+
+    def check_for_number_completeness(self, num: int):
+        pos = (num - self.remainder.index).values / 2 ** self.remainder['even'] % 1
+        return 0 in pos
