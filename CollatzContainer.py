@@ -80,3 +80,11 @@ class CollatzContainer:
 
     def load(self, files: dict):
         raise NotImplementedError
+
+    """
+    UTILITIES
+    """
+
+    def check_for_number_completeness(self, num: int):
+        raise NotImplementedError
+
