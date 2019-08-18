@@ -85,8 +85,6 @@ class Collatz:
         :param num:
         :return:
         """
-        # Converts to float for future calculations
-        num = float(num)
         for even, remainders in self.evens.items():
             # Performs the above equation then mods it with 1
             possible_ints = [((num - rem) / 2 ** even) % 1
