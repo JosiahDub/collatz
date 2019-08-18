@@ -30,9 +30,9 @@ class CollatzContainer:
     def get_complete_evens(self, complete: bool):
         raise NotImplementedError
 
-    # ######################
-    # REMAINDER
-    # ######################
+    """
+    REMAINDER
+    """
 
     def add_remainder(self, even: int, rem: Remainder):
         raise NotImplementedError
@@ -55,9 +55,9 @@ class CollatzContainer:
     def get_sequence(self, remainder: int):
         raise NotImplementedError
 
-    # #####################################
-    # STATS
-    # #####################################
+    """
+    STATS
+    """
 
     def update_last_number(self, number: int):
         raise NotImplementedError
@@ -71,9 +71,9 @@ class CollatzContainer:
     def get_stats(self):
         raise NotImplementedError
 
-    # #####################################
-    # SAVE AND LOAD
-    # #####################################
+    """
+    SAVE AND LOAD
+    """
 
     def save(self, path: str):
         raise NotImplementedError

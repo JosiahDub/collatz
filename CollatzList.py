@@ -36,9 +36,9 @@ class CollatzList(CollatzContainer):
     def get_complete_evens(self, complete: bool):
         return [even for even, even_info in self.evens.items() if even_info['even'].completed]
 
-    # ######################
-    # REMAINDER
-    # ######################
+    """
+    REMAINDER
+    """
 
     def add_remainder(self, even: EvenSteps, rem: Remainder):
         self.evens[even.even_steps]['remainders'][rem.remainder] = Remainder
@@ -61,9 +61,9 @@ class CollatzList(CollatzContainer):
     def get_sequence(self, remainder: int):
         raise NotImplementedError
 
-    # #####################################
+    """
     # STATS
-    # #####################################
+    """
 
     def update_last_number(self, number: int):
         self.last_number = number
