@@ -76,25 +76,6 @@ class Collatz:
                                            lesser_seq, sequence)
             self.container.add_remainder_pair(even, remainder_pair)
 
-    def check_for_number_completeness(self, num):
-        """
-        Checks if the number already has a even and remainder associated with it
-
-        Checks if an integer exists after the following equation:
-        possible_int = (num - remainder)/2 ** even
-        :param num:
-        :return:
-        """
-        for even, remainders in self.evens.items():
-            # Performs the above equation then mods it with 1
-            possible_ints = [((num - rem) / 2 ** even) % 1
-                             for rem in remainders]
-            # If there are any zeros, then the number is complete.
-            if 0.0 in possible_ints:
-                return True
-        # Returns false if it makes it through the for loop.
-        return False
-
     def add_from_incomplete_list(self, incomplete_sequence):
         """
         This algorithm takes in a list of incomplete numbers and add them.
