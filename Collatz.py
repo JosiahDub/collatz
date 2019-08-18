@@ -189,28 +189,6 @@ class Collatz:
                     sequence.remove(known_number)
         return sequence
 
-    def is_remainder_subset(self, subset_remainder, remainder):
-        """
-        Determine if a remainder is a subset of another remainder's sequence.
-
-        If it is, return the index where is starts. Otherwise return -1
-        :param subset_remainder:
-        :param remainder:
-        :return:
-        """
-        subset_sequence = self.container.get_sequence(subset_remainder)
-        remainder_sequence = self.container.get_sequence(remainder)
-        seq_index = -1
-        if subset_sequence in remainder_sequence:
-            start_seq = remainder_sequence.index(subset_sequence)
-            # Get the value in the sequence
-            found_seq_num = calc_short(remainder, start_seq)
-            # Get the remainder of the value
-            _, __, ___, possible_rem = calc_verbose(found_seq_num)
-            if possible_rem == subset_remainder:
-                seq_index = start_seq
-        return seq_index
-
 
 def calc_verbose(number):
     """

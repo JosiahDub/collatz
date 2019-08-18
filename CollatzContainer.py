@@ -88,3 +88,6 @@ class CollatzContainer:
     def check_for_number_completeness(self, num: int):
         raise NotImplementedError
 
+    def is_remainder_subset(self, subset: int, remainder: int):
+        raise NotImplementedError
+

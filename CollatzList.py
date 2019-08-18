@@ -81,14 +81,15 @@ class CollatzList(CollatzContainer):
     SAVE AND LOAD
     """
     def save(self, path: str):
-        pass
+        raise NotImplementedError
 
     def load(self, files: dict):
-        pass
+        raise NotImplementedError
 
     """
     UTILITIES
     """
+
     def check_for_number_completeness(self, num):
         """
         Checks if the number already has a even and remainder associated with it
@@ -107,3 +108,6 @@ class CollatzList(CollatzContainer):
                 return True
         # Returns false if it makes it through the for loop.
         return False
+
+    def is_remainder_subset(self, subset: int, remainder: int):
+        raise NotImplementedError

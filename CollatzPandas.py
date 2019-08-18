@@ -1,6 +1,7 @@
 import pandas as pd
 
 from CollatzContainer import *
+from Collatz import calc_verbose, calc_short
 
 
 class CollatzPandas(CollatzContainer):
@@ -139,3 +140,17 @@ class CollatzPandas(CollatzContainer):
     def check_for_number_completeness(self, num: int):
         pos = (num - self.remainder.index).values / 2 ** self.remainder['even'] % 1
         return 0 in pos
+
+    def is_remainder_subset(self, subset: int, remainder: int):
+        subset_sequence = self.remainder.at[subset, 'sequence']
+        rem_sequence = self.remainder.at[remainder, 'sequence']
+        seq_index = -1
+        if subset_sequence in rem_sequence:
+            start_seq = rem_sequence.index(subset_sequence)
+            # Get the value in the sequence
+            found_seq_num = calc_short(remainder, start_seq)
+            # Get the remainder of the value
+            _, __, ___, possible_rem = calc_verbose(found_seq_num)
+            if possible_rem == subset:
+                seq_index = start_seq
+        return seq_index
